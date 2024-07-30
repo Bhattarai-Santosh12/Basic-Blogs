@@ -1,0 +1,45 @@
+﻿@model BasicBlogs.Models.MyBlog
+
+@{
+    ViewData["Title"] = "Edit Blogs";
+}
+
+<section class="container border-2 shadow m-6">
+    <div class="d-flex justify-content-center align-items-center">
+        <h1>Edit Blog</h1>
+        <hr />
+    </div>
+    <form class="m-6" method="post" asp-action="EditMyBlogs" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" asp-for="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="Authorname" class="form-label">Author Name</label>
+            <input type="text" class="form-control" id="Authorname" asp-for="AuthorName">
+            <span asp-validation-for="AuthorName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="editor" class="form-label">Write your Blog Content</label>
+            <textarea id="editor" name="Description" asp-for="Description" class="form-control" rows="30"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload Image</label>
+            <input type="file" class="form-control" id="image" asp-for="Image">
+            <span asp-validation-for="Image" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+    </form>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/42.0.2/ckeditor.min.js" integrity="sha512-wwnrBHBHHrnXauNNtGczDNwzYcHbiKRKrCmw/2AMWVmbwPnaoDCUFGkg8YuHZK4JiZ4HV/IP7NuA34m+nLQyZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        })
+</script>
