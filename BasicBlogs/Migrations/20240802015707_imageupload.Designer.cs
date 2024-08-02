@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicBlogs.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240729153342_firstinit")]
-    partial class firstinit
+    [Migration("20240802015707_imageupload")]
+    partial class imageupload
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,35 @@ namespace BasicBlogs.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("BasicBlogs.Models.LoginSignUp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Registrations");
+                });
 
             modelBuilder.Entity("BasicBlogs.Models.MyBlog", b =>
                 {
@@ -36,7 +65,8 @@ namespace BasicBlogs.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateOnly>("PublishDate")

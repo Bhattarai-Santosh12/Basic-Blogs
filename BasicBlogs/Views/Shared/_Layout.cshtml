@@ -173,7 +173,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
@@ -197,6 +197,27 @@
                                
                             </ul>
                         </li>
+ *@
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="" asp-controller="MyBlog" asp-action="CreateAddBlogs">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                <p>Add Blogs</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="" asp-controller="MyBlog" asp-action="ReadBlogs">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <p>View Blogs</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link " >
+                                <i class="fa-solid fa-user"></i>
+                                <p>Users</p>
+                            </a>
+                        </li>
                         
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -211,7 +232,7 @@
             <!-- Main content -->
             <section class="content">
                     <div class="card-body">
-                       @RenderBody();
+                       @RenderBody()
                     </div>
                    
                 </div>

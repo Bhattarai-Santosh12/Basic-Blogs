@@ -28,6 +28,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=MyBlog}/{action=ReadBlogs}/{id?}");
+    //pattern: "{controller=LoginSignUp}/{action=LoginSignup}/{id?}");
+
+pattern: "{controller=MyBlog}/{action=ReadBlogs}/{id?}");
 
 app.Run();

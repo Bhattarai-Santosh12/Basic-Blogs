@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.custom-navbar {
+    padding-top: 1rem; /* Adjust as needed */
+    padding-bottom: 1rem; /* Adjust as needed */
+}
