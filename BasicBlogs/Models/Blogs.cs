@@ -19,11 +19,9 @@ namespace BasicBlogs.Models
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
 
-        [NotMapped]
-        public IFormFile Image { get; set; }
 
         [Required(ErrorMessage = "Description is required")]
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         public DateOnly PublishDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 

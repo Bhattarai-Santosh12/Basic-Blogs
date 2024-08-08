@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace BasicBlogs.Controllers
 {
@@ -20,45 +21,53 @@ namespace BasicBlogs.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        // Read Blogs
         public IActionResult ReadBlogs()
         {
-            List<MyBlog> MyBlogs = _context.MyBlogs.ToList();
-            return View(MyBlogs);
+            List<MyBlog> myBlogs = _context.MyBlogs.ToList();
+            return View(myBlogs);
         }
 
         // Create data
         public IActionResult CreateAddBlogs()
         {
-            return View(new MyBlog());
+            return View(new BlogVM());
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateAddBlogs(MyBlog obj)
+        public async Task<IActionResult> CreateAddBlogs(BlogVM vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) { return View(vm); }
+
+            var post = new MyBlog();
+
+             post.Title = vm.Title;
+            post.Description = vm.Description;
+            post.AuthorName = vm.AuthorName;
+  
+
+            if (vm.Image != null)
             {
-                if (obj.Image != null)
-                {
-                    string folder = "images/CoverImages/";
-                    folder += Guid.NewGuid().ToString() + "_" + obj.Image.FileName;
-                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
-
-                    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
-                    {
-                        await obj.Image.CopyToAsync(fileStream);
-                    }
-                    Console.WriteLine($"Image Path: {folder}");
-                    obj.ImagePath = folder; // Save the path to the database
-
-                    // Log to verify the ImagePath assignment
-                    Console.WriteLine($"Assigned ImagePath: {obj.ImagePath}");
-                }
-
-                _context.MyBlogs.Add(obj);
-                _context.SaveChanges();
-                return RedirectToAction("ReadBlogs");
+                post.ImagePath= UploadImage(vm.Image);
             }
-            return View(obj);
+
+
+            await _context.MyBlogs.AddAsync(post);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ReadBlogs");
+        }
+        private string UploadImage(IFormFile file)
+        {
+            string uniqueFileName = "";
+            var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "image");
+            uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            var filePath = Path.Combine(folderPath, uniqueFileName);
+            using (FileStream fileStream = System.IO.File.Create(filePath))
+            {
+                file.CopyTo(fileStream);
+            }
+            return uniqueFileName;
         }
 
         // Edit data
@@ -68,12 +77,13 @@ namespace BasicBlogs.Controllers
             {
                 return NotFound();
             }
-            MyBlog MyBlogFromDb = _context.MyBlogs.Find(id);
-            if (MyBlogFromDb == null)
+
+            MyBlog myBlogFromDb = _context.MyBlogs.Find(id);
+            if (myBlogFromDb == null)
             {
                 return NotFound();
             }
-            return View(MyBlogFromDb);
+            return View(myBlogFromDb);
         }
 
         [HttpPost]
@@ -87,6 +97,9 @@ namespace BasicBlogs.Controllers
             }
             return View(obj);
         }
+
+       
+
 
         // Delete data
         public IActionResult Delete(int id)
