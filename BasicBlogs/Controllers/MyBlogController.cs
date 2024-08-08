@@ -24,9 +24,35 @@ namespace BasicBlogs.Controllers
         // Read Blogs
         public IActionResult ReadBlogs()
         {
-            List<MyBlog> myBlogs = _context.MyBlogs.ToList();
-            return View(myBlogs);
+            var blogs = _context.MyBlogs.ToList();
+            var blogVMs = blogs.Select(blog => new BlogVM
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                AuthorName = blog.AuthorName,
+                Description = blog.Description,
+                PublishDate = DateOnly.FromDateTime(blog.PublishTime), // Adjust if necessary
+                ImagePath = blog.ImagePath // Correct property name for image path
+            }).ToList();
+            return View(blogVMs);
         }
+
+        //public IActionResult ReadBlogs()
+        //{
+        //    var myBlogs = _context.MyBlogs.ToList();
+        //    var blogVMs = myBlogs.Select(blog => new BlogVM
+        //    {
+        //        Id = blog.Id,
+        //        Title = blog.Title,
+        //        AuthorName = blog.AuthorName,
+        //        Description = blog.Description,
+        //        PublishDate = blog.PublishDate, // Ensure you include this property if it exists
+        //        Image = null // Since you're handling images as paths, not `IFormFile`, leave this null
+        //    }).ToList();
+
+        //    return View(blogVMs);
+        //}
+
 
         // Create data
         public IActionResult CreateAddBlogs()
