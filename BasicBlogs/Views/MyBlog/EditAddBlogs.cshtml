@@ -1,15 +1,17 @@
 ﻿@model BasicBlogs.Models.BlogVM
 
-@{
-    ViewData["Title"] = "Edit Blogs";
-}
+
 
 <section class="container border-2 shadow m-6">
     <div class="d-flex justify-content-center align-items-center">
         <h1>Edit Blog</h1>
         <hr />
     </div>
-    <form class="m-6" method="post" asp-action="EditMyBlogs" enctype="multipart/form-data">
+        <form class="m-6" method="post" asp-controller="MyBlog" asp-action="EditMyBlogs" enctype="multipart/form-data">
+
+        <input type="hidden" asp-for="Id" />
+
+
      
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>

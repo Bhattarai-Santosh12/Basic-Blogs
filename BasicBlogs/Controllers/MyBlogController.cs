@@ -99,32 +99,69 @@ namespace BasicBlogs.Controllers
         // Edit data
         public IActionResult EditAddBlogs(int id)
         {
-            if (id == 0)
-            {
-                return NotFound();
-            }
+           
 
             MyBlog myBlogFromDb = _context.MyBlogs.Find(id);
             if (myBlogFromDb == null)
             {
                 return NotFound();
             }
-            return View(myBlogFromDb);
+            var blogvm = new BlogVM()
+            {
+                Id = myBlogFromDb.Id,
+                Title = myBlogFromDb.Title,
+                AuthorName = myBlogFromDb.AuthorName,
+                Description = myBlogFromDb.Description,
+                PublishDate = myBlogFromDb.PublishDate,
+                ImagePath= myBlogFromDb.ImagePath,
+            };
+            return View(blogvm);
         }
 
         [HttpPost]
-        public IActionResult EditMyBlogs(MyBlog obj)
+        public async Task<IActionResult> EditMyBlogs(BlogVM vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.MyBlogs.Update(obj);
-                _context.SaveChanges();
-                return RedirectToAction("ReadBlogs");
+                return View(vm);
             }
-            return View(obj);
+
+            var blogFromDb = _context.MyBlogs.Find(vm.Id);
+            if (blogFromDb == null)
+            {
+                return NotFound();
+            }
+
+            // Update the blog properties
+            blogFromDb.Title = vm.Title;
+            blogFromDb.AuthorName = vm.AuthorName;
+            blogFromDb.Description = vm.Description;
+            blogFromDb.PublishDate = vm.PublishDate;
+
+            // Handle the image update
+            if (vm.Image != null)
+            {
+                // Optionally delete the old image
+                if (!string.IsNullOrEmpty(blogFromDb.ImagePath))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "image", blogFromDb.ImagePath);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Upload the new image
+                blogFromDb.ImagePath = UploadImage(vm.Image);
+            }
+
+            _context.MyBlogs.Update(blogFromDb);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ReadBlogs");
         }
 
-       
+
 
 
         // Delete data
@@ -139,5 +176,29 @@ namespace BasicBlogs.Controllers
             _context.SaveChanges();
             return RedirectToAction("ReadBlogs");
         }
+
+
+        //view Blogs
+        public IActionResult ViewBlogs(int id)
+        {
+            var blog = _context.MyBlogs.Find(id);
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            var blogVM = new BlogVM
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                AuthorName = blog.AuthorName,
+                Description = blog.Description,
+                PublishDate = DateOnly.FromDateTime(blog.PublishTime), // Adjust if necessary
+                ImagePath = blog.ImagePath // Correct property name for image path
+            };
+
+            return View(blogVM);
+        }
     }
-}
+    }
+
