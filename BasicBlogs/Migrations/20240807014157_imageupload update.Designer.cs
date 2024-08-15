@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicBlogs.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240802022934_add-migration update")]
-    partial class addmigrationupdate
+    [Migration("20240807014157_imageupload update")]
+    partial class imageuploadupdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,7 +51,7 @@ namespace BasicBlogs.Migrations
                     b.ToTable("Registrations");
                 });
 
-            modelBuilder.Entity("BasicBlogs.Models.MyBlog", b =>
+            modelBuilder.Entity("BasicBlogs.Models.MyBlogs", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace BasicBlogs.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -81,7 +81,7 @@ namespace BasicBlogs.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MyBlogs");
+                    b.ToTable("Blogs");
                 });
 #pragma warning restore 612, 618
         }

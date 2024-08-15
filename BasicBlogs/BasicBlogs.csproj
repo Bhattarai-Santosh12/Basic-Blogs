@@ -23,8 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Folder Include="Data\" />
+=======
+<<<<<<< HEAD
+    <Folder Include="wwwroot\images\BlogImages\" />
+=======
+>>>>>>> 7468e1516a3dbfcd4f35293b07ccaeb632053972
     <Folder Include="wwwroot\image\" />
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
   </ItemGroup>
 
 </Project>

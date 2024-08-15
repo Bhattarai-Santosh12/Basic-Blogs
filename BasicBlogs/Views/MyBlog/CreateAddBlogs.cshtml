@@ -1,4 +1,10 @@
+<<<<<<< HEAD
+﻿@model BasicBlogs.ViewModel.Blogs
+
+@* @model BasicBlogs.ViewModel.Blogs *@
+=======
 ﻿@model BasicBlogs.Models.BlogVM
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
 
 @{
     ViewData["Title"] = "Add Blog";
@@ -27,10 +33,11 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Upload Image</label>
-            <input type="file" class="form-control" id="image" asp-for="Image">
-            <span asp-validation-for="Image" class="text-danger"></span>
+            <label for="Photo" class="form-label" asp-for="Photo">Upload Image</label>
+            <input type="file" name="file" class="form-control" id="image">
+            <span asp-validation-for="Photo" class="text-danger"></span>
         </div>
+
         <button type="submit" class="btn btn-primary mb-3">Submit</button>
     </form>
 </section>

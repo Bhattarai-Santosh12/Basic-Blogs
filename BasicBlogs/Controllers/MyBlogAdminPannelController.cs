@@ -6,8 +6,16 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+<<<<<<< HEAD
+using System.Reflection.Metadata;
+using BasicBlogs.ViewModel;
+=======
 using Microsoft.AspNetCore.Identity;
+<<<<<<< HEAD:BasicBlogs/Controllers/MyBlogAdminPannelController.cs
 using BasicBlogs.Entities;
+=======
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
+>>>>>>> 7468e1516a3dbfcd4f35293b07ccaeb632053972:BasicBlogs/Controllers/MyBlogController.cs
 
 namespace BasicBlogs.Controllers
 {
@@ -16,15 +24,21 @@ namespace BasicBlogs.Controllers
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+
         public MyBlogController(AppDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+
         }
 
         // Read Blogs
         public IActionResult ReadBlogs()
         {
+<<<<<<< HEAD
+            List<MyBlogs> MyBlogs = _context.Blogs.ToList();
+            return View(MyBlogs);
+=======
             var blogs = _context.MyBlogs.ToList();
             var blogVMs = blogs.Select(blog => new BlogVM
             {
@@ -36,6 +50,7 @@ namespace BasicBlogs.Controllers
                 ImagePath = blog.ImagePath // Correct property name for image path
             }).ToList();
             return View(blogVMs);
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
         }
 
         //public IActionResult ReadBlogs()
@@ -58,12 +73,21 @@ namespace BasicBlogs.Controllers
         // Create data
         public IActionResult CreateAddBlogs()
         {
+<<<<<<< HEAD
+            return View(new Blogs());
+=======
             return View(new BlogVM());
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
         }
 
 
         [HttpPost]
+<<<<<<< HEAD
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAddBlogs(MyBlogs obj, IFormFile? file)
+=======
         public async Task<IActionResult> CreateAddBlogs(BlogVM vm)
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
         {
             if (!ModelState.IsValid) { return View(vm); }
 
@@ -76,7 +100,28 @@ namespace BasicBlogs.Controllers
 
             if (vm.Image != null)
             {
+<<<<<<< HEAD
+
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string ImagePath = Path.Combine(wwwRootPath, @"images\BlogImages");
+
+                    using (var fileStream = new FileStream(Path.Combine(ImagePath, filename), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                     obj.Image = @"images\BlogImages" + filename; 
+                }
+                _context.Blogs.Add(obj);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("ReadBlogs");
+
+
+=======
                 post.ImagePath= UploadImage(vm.Image);
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
             }
 
 
@@ -97,6 +142,7 @@ namespace BasicBlogs.Controllers
             return uniqueFileName;
         }
 
+
         // Edit data
         public IActionResult EditAddBlogs(int id)
         {
@@ -107,7 +153,12 @@ namespace BasicBlogs.Controllers
             {
                 return NotFound();
             }
+<<<<<<< HEAD
+            MyBlogs MyBlogFromDb = _context.Blogs.Find(id);
+            if (MyBlogFromDb == null)
+=======
             var blogvm = new BlogVM()
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
             {
                 Id = myBlogFromDb.Id,
                 Title = myBlogFromDb.Title,
@@ -120,11 +171,21 @@ namespace BasicBlogs.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
+        public IActionResult EditMyBlogs(MyBlogs obj)
+=======
         public async Task<IActionResult> EditMyBlogs(BlogVM vm)
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
         {
             if (!ModelState.IsValid)
             {
+<<<<<<< HEAD
+                _context.Blogs.Update(obj);
+                _context.SaveChanges();
+                return RedirectToAction("ReadBlogs");
+=======
                 return View(vm);
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
             }
 
             var blogFromDb = _context.MyBlogs.Find(vm.Id);
@@ -168,12 +229,12 @@ namespace BasicBlogs.Controllers
         // Delete data
         public IActionResult Delete(int id)
         {
-            var blog = _context.MyBlogs.Find(id);
+            var blog = _context.Blogs.Find(id);
             if (blog == null)
             {
                 return NotFound();
             }
-            _context.MyBlogs.Remove(blog);
+            _context.Blogs.Remove(blog);
             _context.SaveChanges();
             return RedirectToAction("ReadBlogs");
         }
@@ -201,5 +262,9 @@ namespace BasicBlogs.Controllers
             return View(blogVM);
         }
     }
+<<<<<<< HEAD
+}
+=======
     }
 
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173

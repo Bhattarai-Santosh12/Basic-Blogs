@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+﻿@model BasicBlogs.ViewModel.Blogs
+=======
 ﻿@model BasicBlogs.Models.BlogVM
 
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
 
 
 <section class="container border-2 shadow m-6">
@@ -7,11 +11,15 @@
         <h1>Edit Blog</h1>
         <hr />
     </div>
+<<<<<<< HEAD
+    <form class="m-6" method="post" asp-action="EditMyBlogs" enctype="multipart/form-data">
+=======
         <form class="m-6" method="post" asp-controller="MyBlog" asp-action="EditMyBlogs" enctype="multipart/form-data">
 
         <input type="hidden" asp-for="Id" />
 
 
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
      
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
@@ -30,8 +38,8 @@
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Upload Image</label>
-            <input type="file" class="form-control" id="image" asp-for="Image">
-            <span asp-validation-for="Image" class="text-danger"></span>
+            <input type="file" class="form-control" id="image" asp-for="Photo">
+            <span asp-validation-for="Photo" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary mb-3">Submit</button>
     </form>
