@@ -1,4 +1,4 @@
-﻿@model BasicBlogs.Models.MyBlog
+﻿@model BasicBlogs.ViewModel.Blogs
 
 @{
     ViewData["Title"] = "Edit Blogs";
@@ -10,7 +10,7 @@
         <hr />
     </div>
     <form class="m-6" method="post" asp-action="EditMyBlogs" enctype="multipart/form-data">
-        <input type="hidden" asp-for="Id" />
+     
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" id="title" asp-for="Title">
@@ -28,8 +28,8 @@
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Upload Image</label>
-            <input type="file" class="form-control" id="image" asp-for="Image">
-            <span asp-validation-for="Image" class="text-danger"></span>
+            <input type="file" class="form-control" id="image" asp-for="Photo">
+            <span asp-validation-for="Photo" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary mb-3">Submit</button>
     </form>

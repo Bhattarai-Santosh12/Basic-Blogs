@@ -16,7 +16,7 @@ namespace BasicBlogs.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "MyBlogs",
+                name: "Blogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -27,14 +27,13 @@ namespace BasicBlogs.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImagePath = table.Column<string>(type: "longtext", nullable: false)
+                    Photo = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PublishDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    PublishTime = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    PublishDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MyBlogs", x => x.Id);
+                    table.PrimaryKey("PK_Blogs", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -66,7 +65,7 @@ namespace BasicBlogs.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MyBlogs");
+                name: "Blogs");
 
             migrationBuilder.DropTable(
                 name: "Registrations");

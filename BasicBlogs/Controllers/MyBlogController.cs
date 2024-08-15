@@ -6,6 +6,8 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
+using BasicBlogs.ViewModel;
 
 namespace BasicBlogs.Controllers
 {
@@ -14,52 +16,54 @@ namespace BasicBlogs.Controllers
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+
         public MyBlogController(AppDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+
         }
 
         public IActionResult ReadBlogs()
         {
-            List<MyBlog> MyBlogs = _context.MyBlogs.ToList();
+            List<MyBlogs> MyBlogs = _context.Blogs.ToList();
             return View(MyBlogs);
         }
 
         // Create data
         public IActionResult CreateAddBlogs()
         {
-            return View(new MyBlog());
+            return View(new Blogs());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAddBlogs(MyBlog obj)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAddBlogs(MyBlogs obj, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                if (obj.Image != null)
+
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
                 {
-                    string folder = "images/CoverImages/";
-                    folder += Guid.NewGuid().ToString() + "_" + obj.Image.FileName;
-                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+                    string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string ImagePath = Path.Combine(wwwRootPath, @"images\BlogImages");
 
-                    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(ImagePath, filename), FileMode.Create))
                     {
-                        await obj.Image.CopyToAsync(fileStream);
+                        file.CopyTo(fileStream);
                     }
-                    Console.WriteLine($"Image Path: {folder}");
-                    obj.ImagePath = folder; // Save the path to the database
-
-                    // Log to verify the ImagePath assignment
-                    Console.WriteLine($"Assigned ImagePath: {obj.ImagePath}");
+                     obj.Image = @"images\BlogImages" + filename; 
                 }
-
-                _context.MyBlogs.Add(obj);
-                _context.SaveChanges();
+                _context.Blogs.Add(obj);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("ReadBlogs");
+
+
             }
             return View(obj);
         }
+
 
         // Edit data
         public IActionResult EditAddBlogs(int id)
@@ -68,7 +72,7 @@ namespace BasicBlogs.Controllers
             {
                 return NotFound();
             }
-            MyBlog MyBlogFromDb = _context.MyBlogs.Find(id);
+            MyBlogs MyBlogFromDb = _context.Blogs.Find(id);
             if (MyBlogFromDb == null)
             {
                 return NotFound();
@@ -77,11 +81,11 @@ namespace BasicBlogs.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditMyBlogs(MyBlog obj)
+        public IActionResult EditMyBlogs(MyBlogs obj)
         {
             if (ModelState.IsValid)
             {
-                _context.MyBlogs.Update(obj);
+                _context.Blogs.Update(obj);
                 _context.SaveChanges();
                 return RedirectToAction("ReadBlogs");
             }
@@ -91,12 +95,12 @@ namespace BasicBlogs.Controllers
         // Delete data
         public IActionResult Delete(int id)
         {
-            var blog = _context.MyBlogs.Find(id);
+            var blog = _context.Blogs.Find(id);
             if (blog == null)
             {
                 return NotFound();
             }
-            _context.MyBlogs.Remove(blog);
+            _context.Blogs.Remove(blog);
             _context.SaveChanges();
             return RedirectToAction("ReadBlogs");
         }

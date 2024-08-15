@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\CoveImage\" />
+    <Folder Include="wwwroot\images\BlogImages\" />
   </ItemGroup>
 
 </Project>

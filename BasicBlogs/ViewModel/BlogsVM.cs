@@ -1,12 +1,12 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Http;
+using BasicBlogs.Models;
 
-namespace BasicBlogs.Models
+namespace BasicBlogs.ViewModel
 {
-    public class MyBlogs
+    public class Blogs
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -20,12 +20,10 @@ namespace BasicBlogs.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Image is required")]
-        public string? Image { get; set; }
-
-
+       
+        public IFormFile? Photo { get; set; }
 
         public DateOnly PublishDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
-        public DateTime PublishTime { get; set; } = DateTime.Now;
     }
 }
