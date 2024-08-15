@@ -1,9 +1,12 @@
-using BasicBlogs.Models;
+using BasicBlogs.Entities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -24,12 +27,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=LoginSignUp}/{action=LoginSignup}/{id?}");
+    pattern: "{controller=UserAccount}/{action=Registration}/{id?}");
 
-pattern: "{controller=MyBlog}/{action=ReadBlogs}/{id?}");
+// pattern: "{controller=MyBlog}/{action=ReadBlogs}/{id?}");
 
 app.Run();

@@ -1,4 +1,8 @@
-﻿@{
+﻿@* @model BasicBlogs.ViewModel.LoginVM *@
+
+@model BasicBlogs.ViewModel.LoginVM
+
+@{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 
@@ -34,17 +38,20 @@
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form action="../../index3.html" method="post">
+                <form method="post" asp-action="Login">
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input asp-for="UserNameOrEmail" class="form-control" placeholder="UserNameOrEmail" />
+                        <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
                     </div>
+
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input asp-for="Password" class="form-control ml-3" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -82,7 +89,7 @@
                     <a href="forgot-password.html">I forgot my password</a>
                 </p>
                 <p class="mb-0">
-                    <a asp-asp-controller="LoginSignUp" asp-action="LoginSignup" class="text-center">Register a new membership</a>
+                    <a asp-controller="UserAccount" asp-action="Registration" class="text-center">Register a new membership</a>
                 </p>
             </div>
             <!-- /.card-body -->

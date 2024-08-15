@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using BasicBlogs.Entities;
 
 namespace BasicBlogs.Controllers
 {
