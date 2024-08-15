@@ -1,14 +1,18 @@
+<<<<<<< HEAD
 ﻿@model BasicBlogs.ViewModel.Blogs
 
 @* @model BasicBlogs.ViewModel.Blogs *@
+=======
+﻿@model BasicBlogs.Models.BlogVM
+>>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
 
 @{
-    ViewData["Title"] = "Add Blogs";
+    ViewData["Title"] = "Add Blog";
 }
 
 <section class="container border-2 shadow m-6">
     <div class="d-flex justify-content-center align-items-center">
-        <h1>Add Blogs</h1>
+        <h1>Add Blog</h1>
         <hr />
     </div>
     <form class="m-6" method="post" enctype="multipart/form-data">
@@ -27,6 +31,7 @@
             <textarea id="editor" name="Description" asp-for="Description" class="form-control" rows="30"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
             <label for="Photo" class="form-label" asp-for="Photo">Upload Image</label>
             <input type="file" name="file" class="form-control" id="image">
