@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-﻿@model BasicBlogs.ViewModel.Blogs
-
-@* @model BasicBlogs.ViewModel.Blogs *@
-=======
-﻿@model BasicBlogs.Models.BlogVM
->>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
+@model BasicBlogs.ViewModel.BlogVM
 
 @{
     ViewData["Title"] = "Add Blog";
@@ -28,14 +22,14 @@
         </div>
         <div class="mb-3">
             <label for="editor" class="form-label">Write your Blog Content</label>
-            <textarea id="editor" name="Description" asp-for="Description" class="form-control" rows="30" ></textarea>
+            <textarea id="editor" name="Description" asp-for="Description" class="form-control" rows="30"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label for="Photo" class="form-label" asp-for="Photo">Upload Image</label>
+            <label for="Photo" class="form-label" asp-for="ImagePath">Upload Image</label>
             <input type="file" name="file" class="form-control" id="image">
-            <span asp-validation-for="Photo" class="text-danger"></span>
+            <span asp-validation-for="ImagePath" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-primary mb-3">Submit</button>

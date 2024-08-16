@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BasicBlogs.Models
+namespace BasicBlogs.ViewModel
 {
     public class BlogVM
     {
@@ -19,7 +19,7 @@ namespace BasicBlogs.Models
 
         public DateOnly PublishDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
-
+        [NotMapped]
         public IFormFile? Image { get; set; }
         public string? ImagePath { get; set; }
 

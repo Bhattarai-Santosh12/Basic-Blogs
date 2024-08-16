@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicBlogs.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240815043843_userAccounts")]
-    partial class userAccounts
+    [Migration("20240815071405_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace BasicBlogs.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("BasicBlogs.Models.MyBlog", b =>
+            modelBuilder.Entity("BasicBlogs.ViewModel.BlogVM", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,14 +37,10 @@ namespace BasicBlogs.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateOnly>("PublishDate")
                         .HasColumnType("date");
-
-                    b.Property<DateTime>("PublishTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
                         .IsRequired()

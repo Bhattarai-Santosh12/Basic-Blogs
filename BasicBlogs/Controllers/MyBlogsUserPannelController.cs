@@ -4,7 +4,7 @@ namespace BasicBlogs.Controllers
 {
     public class MyBlogsUserPannelController : Controller
     {
-        public IActionResult Index()
+        public IActionResult UserPannel()
         {
             return View();
         }

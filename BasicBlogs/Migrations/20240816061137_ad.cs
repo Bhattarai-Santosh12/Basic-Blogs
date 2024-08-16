@@ -6,19 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BasicBlogs.Migrations
 {
     /// <inheritdoc />
-    public partial class abc : Migration
+    public partial class ad : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Photo",
-                table: "Blogs",
-                newName: "Image");
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "PublishTime",
-                table: "Blogs",
+                table: "MyBlogs",
                 type: "datetime(6)",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
@@ -29,12 +24,7 @@ namespace BasicBlogs.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "PublishTime",
-                table: "Blogs");
-
-            migrationBuilder.RenameColumn(
-                name: "Image",
-                table: "Blogs",
-                newName: "Photo");
+                table: "MyBlogs");
         }
     }
 }

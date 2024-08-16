@@ -19,40 +19,7 @@ namespace BasicBlogs.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-<<<<<<< HEAD
-            modelBuilder.Entity("BasicBlogs.Models.MyBlog", b =>
-=======
-            modelBuilder.Entity("BasicBlogs.Models.LoginSignUp", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Registrations");
-                });
-
             modelBuilder.Entity("BasicBlogs.Models.MyBlogs", b =>
->>>>>>> 7468e1516a3dbfcd4f35293b07ccaeb632053972
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,8 +33,7 @@ namespace BasicBlogs.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
+                    b.Property<string>("ImagePath")
                         .HasColumnType("longtext");
 
                     b.Property<DateOnly>("PublishDate")
@@ -82,7 +48,7 @@ namespace BasicBlogs.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("MyBlogs");
                 });
 
             modelBuilder.Entity("BasicBlogs.ViewModel.UserAccountVM", b =>

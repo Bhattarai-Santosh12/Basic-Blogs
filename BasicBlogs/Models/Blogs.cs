@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Http;
 
 namespace BasicBlogs.Models
 {
@@ -19,16 +17,7 @@ namespace BasicBlogs.Models
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
 
-<<<<<<< HEAD
-        [Required(ErrorMessage = "Image is required")]
-        public string? Image { get; set; }
-
-
-=======
-
-        [Required(ErrorMessage = "Description is required")]
         public string? ImagePath { get; set; }
->>>>>>> 4ab04330cfaf5a17e2b9166ba514e0dda1d42173
 
         public DateOnly PublishDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 

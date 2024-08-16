@@ -1,11 +1,11 @@
-﻿@using static BasicBlogs.Models.BlogVM;
+﻿@using static BasicBlogs.ViewModel.BlogVM
 
 
 <section class="container col-10">
     <div >
         <h2>@Model.Title</h2>
         <div style="width: 100%; height: 300px; overflow: hidden;">
-            <img src="/image/@Model.ImagePath" style="width: 50%; height: 100%; object-fit: fill;" />
+            <img src="/images/@Model.ImagePath" style="width: 50%; height: 100%; object-fit: fill;" />
         </div>
         <p><strong>Author:</strong> @Model.AuthorName</p>
         <p><strong>Published On:</strong> @Model.PublishDate.ToShortDateString()</p>
