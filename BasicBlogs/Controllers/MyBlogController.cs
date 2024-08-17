@@ -9,9 +9,12 @@ using System.Collections.Generic;
 
 using BasicBlogs.Entities;
 using BasicBlogs.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace BasicBlogs.Controllers
 {
+    [Authorize]
     public class MyBlogController : Controller
     {
         private readonly AppDbContext _context;
@@ -24,6 +27,7 @@ namespace BasicBlogs.Controllers
         }
 
         // Read Blogs
+    
         public IActionResult ReadBlogs()
         {
             var blogs = _context.MyBlogs.ToList();
@@ -41,6 +45,7 @@ namespace BasicBlogs.Controllers
         }
 
         // Create Blog
+      
         public IActionResult CreateAddBlogs()
         {
             return View(new BlogVM());
@@ -75,6 +80,7 @@ namespace BasicBlogs.Controllers
         }
 
         // Edit Blog
+        
         public IActionResult EditAddBlogs(int id)
         {
             var myBlogFromDb = _context.MyBlogs.Find(id);
@@ -154,6 +160,7 @@ namespace BasicBlogs.Controllers
         }
 
         // View Blog
+      
         public IActionResult ViewBlogs(int id)
         {
             var blog = _context.MyBlogs.Find(id);

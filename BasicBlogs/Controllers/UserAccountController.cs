@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace BasicBlogs.Controllers
 {
+    [Authorize]
     public class UserAccountController : Controller
     {
         private  readonly AppDbContext _context;
@@ -21,12 +22,16 @@ namespace BasicBlogs.Controllers
         {
             _context = appDbContext;
         }
+        [Authorize]
         public IActionResult Index ()
         { 
         return View(_context.UserAccounts.ToList());
         }
 
+
+
         //registration
+        [AllowAnonymous]
         public IActionResult Registration()
         {
             return View();
@@ -65,6 +70,7 @@ namespace BasicBlogs.Controllers
         }
 
         //login
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -102,12 +108,13 @@ namespace BasicBlogs.Controllers
 
             return View(model);
         }
-
+        [AllowAnonymous]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("index");
+            return RedirectToAction("Login", "UserAccount"); 
         }
+
 
         [Authorize]
         public IActionResult SecurePage()
