@@ -14,7 +14,7 @@ namespace BasicBlogs.Controllers
         {
             this.appDbContext = appDbContext;
         }
-        [Authorize]
+       
         public IActionResult UserPannel(int id)
         {
             var blogs = appDbContext.MyBlogs.Find(id);

@@ -1,20 +1,19 @@
 ﻿using BasicBlogs.Entities;
 
-
 using BasicBlogs.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace BasicBlogs.Controllers
 {
-    [Authorize]
     public class UserAccountController : Controller
     {
-        private  readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
         public object CookieAuthenticationDefault { get; private set; }
 
@@ -22,16 +21,12 @@ namespace BasicBlogs.Controllers
         {
             _context = appDbContext;
         }
-        [Authorize]
-        public IActionResult Index ()
-        { 
-        return View(_context.UserAccounts.ToList());
+        public IActionResult Index()
+        {
+            return View(_context.UserAccounts.ToList());
         }
 
-
-
         //registration
-        [AllowAnonymous]
         public IActionResult Registration()
         {
             return View();
@@ -42,19 +37,21 @@ namespace BasicBlogs.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserAccountVM account= new UserAccountVM();
-                account.Email = model.Email;
-                account.Address = model.Address;
-                account.Password = model.Password;
-                account.Phone = model.Phone;
+                UserAccountVM account = new UserAccountVM();
                 account.UserName = model.UserName;
+                account.Email = model.Email;
+                account.Password = model.Password;
+                account.Address = model.Address;
+                account.Phone = model.Phone;
+                
+            
 
                 try
                 {
                     _context.UserAccounts.Add(account);
                     _context.SaveChanges();
                     ModelState.Clear();
-                    ViewBag.Message = $"{account.UserName} Login Successfull, Please Login";
+                    ViewBag.Message = $"{account.UserName} Registration Successfull, Please Login";
                     return RedirectToAction("Login");
                 }
                 catch (DbUpdateException ex)
@@ -70,51 +67,71 @@ namespace BasicBlogs.Controllers
         }
 
         //login
-        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        //public IActionResult Login(LoginVM model)
         public async Task<IActionResult> Login(LoginVM model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var User = _context.UserAccounts.Where(x => (x.UserName == model.UserNameOrEmail || x.Email==model.UserNameOrEmail )&& x.Password == model.Password).FirstOrDefault();
-                if(User != null)
+                // Check if the user is an admin (from UserLogins table)
+                var adminUser = _context.UserLogins.FirstOrDefault(x =>
+                    x.UserNameOrEmail == model.UserNameOrEmail && x.Password == model.Password);
+
+                if (adminUser != null)
                 {
-                    //Success, Create Cookie
+                    // Create claims for the admin user
+                    var adminClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, adminUser.UserNameOrEmail),
+                new Claim(ClaimTypes.Role, adminUser.Role),
+            };
 
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, User.Email),
-                        new Claim("Name", User.UserName),
-                        new Claim(ClaimTypes.Role,"User"),
-                    };
-                    var ClaimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(ClaimsIdentity));
+                    var adminIdentity = new ClaimsIdentity(adminClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(adminIdentity));
 
-                   
+                    // Redirect to admin page
                     return RedirectToAction("ReadBlogs", "MyBlog");
                 }
-                else
+
+                // Check if the user is a regular user (from UserAccounts table)
+                var regularUser = _context.UserAccounts.FirstOrDefault(x =>
+                    x.Email == model.UserNameOrEmail && x.Password == model.Password);
+
+                if (regularUser != null)
                 {
-                    ModelState.AddModelError("", "UserName/Email or Password is not correct");
+                    // Create claims for the regular user
+                    var userClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, regularUser.Email),
+                new Claim(ClaimTypes.Role, "User"), // You may set default "User" role
+            };
+
+                    var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userIdentity));
+
+                    // Redirect to user panel
+                 //   return RedirectToAction("UserPannel", "MyBlogsUserPannel");
+                    return RedirectToAction("UserPannel", "MyBlogsUserPannel", new { id = regularUser.Id });
+
                 }
 
+                // If no user is found
+                ModelState.AddModelError("", "UserName/Email or Password is not correct");
             }
 
             return View(model);
         }
-        [AllowAnonymous]
+
+
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "UserAccount"); 
+            return RedirectToAction("index");
         }
-
 
         [Authorize]
         public IActionResult SecurePage()

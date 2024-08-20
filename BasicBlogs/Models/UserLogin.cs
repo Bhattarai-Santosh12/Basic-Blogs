@@ -1,11 +1,10 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace BasicBlogs.ViewModel
+namespace BasicBlogs.Models
 {
-    public class LoginVM
+    public class UserLogin
     {
-        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "User Name or Email is Required")]
@@ -16,6 +15,6 @@ namespace BasicBlogs.ViewModel
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        
+        public string Role { get; set; } = "admin";
     }
 }

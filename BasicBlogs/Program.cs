@@ -8,21 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-
-//login authorization
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/UserAccount/Login";
-        options.AccessDeniedPath = "/UserAccount/AccessDenied"; // Optional
-    });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -43,5 +35,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=UserAccount}/{action=Registration}/{id?}");
+
+// pattern: "{controller=MyBlog}/{action=ReadBlogs}/{id?}");
 
 app.Run();
