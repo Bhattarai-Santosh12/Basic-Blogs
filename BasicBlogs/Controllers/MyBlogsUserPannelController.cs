@@ -1,7 +1,9 @@
 ﻿using BasicBlogs.Entities;
+using BasicBlogs.Models;
 using BasicBlogs.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BasicBlogs.Controllers
 {
@@ -15,21 +17,40 @@ namespace BasicBlogs.Controllers
             this.appDbContext = appDbContext;
         }
        
-        public IActionResult UserPannel(int id)
+        public IActionResult Index(int id)
         {
-            var blogs = appDbContext.MyBlogs.Find(id);
-            if(blogs == null)
+
+            if(ModelState.IsValid)
             {
-                return NotFound();
+
+            var blogs = appDbContext.MyBlogs.ToList();
+            var blogVMs = blogs.Select(blog => new MyBlogs
+
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                AuthorName = blog.AuthorName,
+                Description = blog.Description,
+                PublishDate = blog.PublishDate, // Adjust if necessary
+                ImagePath = blog.ImagePath // Correct property name for image path
+            }).ToList();
+            return View(blogVMs);
             }
-            var blogsVM= new UserPanneVM();
-            blogsVM.Id = id;
-            blogsVM.Title =blogs.Title;
-            blogsVM.Description= blogs.Description;
-            blogsVM.AuthorName = blogs.AuthorName;
-            blogsVM.ImagePath = blogs.ImagePath;
-            blogsVM.PublishDate = blogs.PublishDate;
-            return View(blogsVM);
+            return View();
+
         }
+
+        public IActionResult ReadBlogsUserPannel(int id)
+        {
+            var blog = appDbContext.MyBlogs.FirstOrDefault(b => b.Id == id);
+
+            if (blog == null)
+            {
+                return NotFound(); // Return a 404 page if the blog is not found
+            }
+
+            return View(blog); // Pass the blog object to the view
+        }
+
     }
 }

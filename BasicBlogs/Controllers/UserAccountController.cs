@@ -115,7 +115,7 @@ namespace BasicBlogs.Controllers
 
                     // Redirect to user panel
                  //   return RedirectToAction("UserPannel", "MyBlogsUserPannel");
-                    return RedirectToAction("UserPannel", "MyBlogsUserPannel", new { id = regularUser.Id });
+                    return RedirectToAction("Index", "MyBlogsUserPannel", new { id = regularUser.Id });
 
                 }
 

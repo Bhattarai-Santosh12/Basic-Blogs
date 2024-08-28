@@ -1,0 +1,37 @@
+﻿@using static BasicBlogs.ViewModel.BlogVM
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-warning mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">BasicBlogs</a> <!-- Brand stays on the left -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                <a class="btn btn-primary" asp-controller="UserAccount" asp-action="Login"><i class="fa-solid fa-arrow-left"></i> Logout</a>
+                </li>
+            </ul>
+     
+
+
+    </div>
+</nav>
+
+<section class="container">
+    <div class="card shadow-sm mb-4" style="border-radius: 10px;">
+        <div class="card-body">
+            <h2 class="text-center">@Model.Title</h2>
+            <div class="d-flex justify-content-center" style="width: 100%; height: 300px; overflow: hidden; border-radius: 10px; margin-bottom: 20px;">
+                <img src="/images/@Model.ImagePath" style="width: 50%; height: 100%; object-fit: cover;" />
+            </div>
+            <p><strong>Author:</strong> @Model.AuthorName</p>
+            <p><strong>Published On:</strong> @Model.PublishDate.ToShortDateString()</p>
+            <p>@Html.Raw(Model.Description)</p>
+        </div>
+    </div>
+</section>
