@@ -1,10 +1,9 @@
 ﻿using BasicBlogs.Entities;
-
 using BasicBlogs.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -15,18 +14,18 @@ namespace BasicBlogs.Controllers
     {
         private readonly AppDbContext _context;
 
-        public object CookieAuthenticationDefault { get; private set; }
-
         public UserAccountController(AppDbContext appDbContext)
         {
             _context = appDbContext;
         }
+
+        // Index to list users
         public IActionResult Index()
         {
             return View(_context.UserAccounts.ToList());
         }
 
-        //registration
+        // Registration action
         public IActionResult Registration()
         {
             return View();
@@ -37,36 +36,42 @@ namespace BasicBlogs.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserAccountVM account = new UserAccountVM();
-                account.UserName = model.UserName;
-                account.Email = model.Email;
-                account.Password = model.Password;
-                account.Address = model.Address;
-                account.Phone = model.Phone;
-                
-            
-
-                try
+                var existingUser = _context.UserAccounts.FirstOrDefault(u => u.Email == model.Email);
+                if (existingUser == null)
                 {
-                    _context.UserAccounts.Add(account);
-                    _context.SaveChanges();
-                    ModelState.Clear();
-                    ViewBag.Message = $"{account.UserName} Registration Successfull, Please Login";
-                    return RedirectToAction("Login");
-                }
-                catch (DbUpdateException ex)
-                {
+                    var account = new UserAccountVM
+                    {
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        Password = model.Password, // Make sure to hash passwords in a real application
+                        Address = model.Address,
+                        Phone = model.Phone
+                    };
 
-                    ModelState.AddModelError("", "Please enter a valid email address");
-                    return View(model);
+                    try
+                    {
+                        _context.UserAccounts.Add(account);
+                        _context.SaveChanges();
+                        ModelState.Clear();
+                        ViewBag.Message = $"{account.UserName} Registration Successful, Please Login";
+                        return RedirectToAction("Login");
+                    }
+                    catch (DbUpdateException)
+                    {
+                        ModelState.AddModelError("", "Please enter a valid email address");
+                        return View(model);
+                    }
                 }
-                return View();
+                else
+                {
+                    ModelState.AddModelError("", "Email already exists");
+                }
             }
 
             return View(model);
         }
 
-        //login
+        // Login action
         public IActionResult Login()
         {
             return View();
@@ -77,60 +82,111 @@ namespace BasicBlogs.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if the user is an admin (from UserLogins table)
                 var adminUser = _context.UserLogins.FirstOrDefault(x =>
                     x.UserNameOrEmail == model.UserNameOrEmail && x.Password == model.Password);
 
                 if (adminUser != null)
                 {
-                    // Create claims for the admin user
                     var adminClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, adminUser.UserNameOrEmail),
-                new Claim(ClaimTypes.Role, adminUser.Role),
-            };
+                    {
+                        new Claim(ClaimTypes.Name, adminUser.UserNameOrEmail),
+                        new Claim(ClaimTypes.Role, adminUser.Role),
+                    };
 
                     var adminIdentity = new ClaimsIdentity(adminClaims, CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(adminIdentity));
 
-                    // Redirect to admin page
                     return RedirectToAction("ReadBlogs", "MyBlog");
                 }
 
-                // Check if the user is a regular user (from UserAccounts table)
                 var regularUser = _context.UserAccounts.FirstOrDefault(x =>
                     x.Email == model.UserNameOrEmail && x.Password == model.Password);
 
                 if (regularUser != null)
                 {
-                    // Create claims for the regular user
                     var userClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, regularUser.Email),
-                new Claim(ClaimTypes.Role, "User"), // You may set default "User" role
-            };
+                    {
+                        new Claim(ClaimTypes.Name, regularUser.Email),
+                        new Claim(ClaimTypes.Role, "User"),
+                    };
 
                     var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userIdentity));
 
-                    // Redirect to user panel
-                 //   return RedirectToAction("UserPannel", "MyBlogsUserPannel");
-                    return RedirectToAction("Index", "MyBlogsUserPannel", new { id = regularUser.Id });
-
+                    return RedirectToAction("Index", "MyBlogsUserPannel");
                 }
 
-                // If no user is found
                 ModelState.AddModelError("", "UserName/Email or Password is not correct");
             }
 
             return View(model);
         }
 
-
-        public IActionResult Logout()
+        // Google External Login
+        [HttpGet]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("index");
+            var redirectUrl = Url.Action("ExternalLoginCallback", "UserAccount", new { ReturnUrl = returnUrl });
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            return Challenge(properties, provider);
+        }
+
+        // Google External Login Callback
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl ??= Url.Content("~/");
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (result?.Principal == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var externalClaims = result.Principal.Claims.ToList();
+            var userEmail = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var userName = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Email == userEmail);
+            if (user == null)
+            {
+                user = new UserAccountVM
+                {
+                    Email = userEmail,
+                    UserName = userName,
+                    Password = "ExternalLoginProvided",
+                    Phone = null,
+                    Address = null
+                };
+                _context.UserAccounts.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            // return LocalRedirect(returnUrl);
+            return RedirectToAction("Index", "MyBlogsUserPannel");
+        }
+
+        // Logout action
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
         }
 
         [Authorize]
